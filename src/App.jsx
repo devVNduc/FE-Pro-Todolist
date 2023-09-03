@@ -1,7 +1,7 @@
 import './App.css'
 import { useFetching } from './customHook/useFetching'
 import { render } from './common/renderHelper';
-
+import { Skeleton } from 'antd'
 function App() {
   const {data, loading, error} = useFetching('/tasks')
   const screen = <>
@@ -50,6 +50,7 @@ function App() {
       <h3 className="list-title">Tasks to Do</h3>
       <ul className="list-items">
         {
+          loading ? Array(10).fill(0).map((item, index)=><Skeleton key={index} active />) : 
           data?.map(item=>{
             return <li key={item?.id}>{item?.attributes?.title}</li>
           })
