@@ -1,9 +1,9 @@
 import './App.css'
 import { useFetching } from './customHook/useFetching'
 import { render } from './common/renderHelper';
-import { Skeleton } from 'antd'
+import { Skeleton, Pagination } from 'antd'
 function App() {
-  const {data, loading, error} = useFetching('/tasks')
+  const {data, loading, error, page, loadPage, nextPage, prevPage} = useFetching('/tasks')
   const screen = <>
   <header className="masthead">
     <div className="boards-menu">
@@ -48,6 +48,11 @@ function App() {
   <section className="lists-container">
     <div className="list">
       <h3 className="list-title">Tasks to Do</h3>
+      <Pagination 
+      showSizeChanger
+      onChange={(pageNumber, pageSize)=>{
+        loadPage(pageNumber, pageSize)
+      }} current={page.page} total={page.total} pageSize={page.pageSize}/>;
       <ul className="list-items">
         {
           loading ? Array(10).fill(0).map((item, index)=><Skeleton key={index} active />) : 
