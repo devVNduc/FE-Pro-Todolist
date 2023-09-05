@@ -5,6 +5,7 @@ export function useFetching(api){
     const  [data, setData] = useState([])
     const  [error, setError] = useState(null)
     const  [loading, setLoading] = useState(true)
+    const [loadCount, setLoadCount] = useState(0)
     const [page, setPage] = useState({
       page: 1,
       pageCount: 5,
@@ -25,6 +26,7 @@ export function useFetching(api){
               })
               setData(res.data.data)
               setLoading(false)
+              setError(null)
             }
           })
           .catch(err=>{
@@ -41,7 +43,7 @@ export function useFetching(api){
           isMounted.current= false
           controller.abort();
         }
-    }, [api, page.page, page.pageSize])
+    }, [api, page.page, page.pageSize, loadCount])
     function loadPage(page, pageSize){
       setLoading(true)
       setPage(prev=>{
@@ -64,7 +66,12 @@ export function useFetching(api){
         })
       }
     }
+
+    function reload(){
+      setLoading(true)
+      setLoadCount(loadCount + 1)
+    }
     
-    return {data, loading, error, page, loadPage, nextPage, prevPage}
+    return {data, loading, error, page, loadPage, nextPage, prevPage, reload}
 }
 

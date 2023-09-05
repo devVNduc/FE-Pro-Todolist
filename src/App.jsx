@@ -1,9 +1,6 @@
 import './App.css'
-import { useFetching } from './customHook/useFetching'
-import { render } from './common/renderHelper';
-import { Skeleton, Pagination } from 'antd'
+import TaskList from '@/components/taskList';
 function App() {
-  const {data, loading, error, page, loadPage, nextPage, prevPage} = useFetching('/tasks')
   const screen = <>
   <header className="masthead">
     <div className="boards-menu">
@@ -46,27 +43,11 @@ function App() {
     <button className="menu-btn btn"><i className="fas fa-ellipsis-h menu-btn-icon" aria-hidden="true"></i>Show Menu</button>
   </section>
   <section className="lists-container">
-    <div className="list">
-      <h3 className="list-title">Tasks to Do</h3>
-      <Pagination 
-      showSizeChanger
-      onChange={(pageNumber, pageSize)=>{
-        loadPage(pageNumber, pageSize)
-      }} current={page.page} total={page.total} pageSize={page.pageSize}/>;
-      <ul className="list-items">
-        {
-          loading ? Array(10).fill(0).map((item, index)=><Skeleton key={index} active />) : 
-          data?.map(item=>{
-            return <li key={item?.id}>{item?.attributes?.title}</li>
-          })
-        }
-      </ul>
-      <button className="add-card-btn btn">Add a card</button>
-    </div>
+    <TaskList title="Danh sách công việc"></TaskList>
     <button className="add-list-btn btn">Add a list</button>
   </section>
   </> 
-  return render(loading, error, screen)
+  return screen
 }
 
 export default App
