@@ -1,11 +1,12 @@
 import Header from "./Header";
 import BoardInfoBar from "./BoardInfoBar";
-function BaseLayout({ children }) {
+import { Outlet } from "react-router-dom";
+function BaseLayout() {
   return (
     <div className="base-layout">
       <Header/>
       <BoardInfoBar/>
-      <main>{children}</main>
+      <main><Outlet/></main>
     </div>
   );
 }
