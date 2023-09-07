@@ -3,9 +3,7 @@
       "jsx": "preserve",
       "baseUrl": "./src",
       "paths": {
-        "@/components/*": ["./components/*"],
-        "@/customHook/*": ["./customHook/*"],
-        "@/common/*": ["./common/*"],
+        "@/*": ["./*"],
       },
     },
 }

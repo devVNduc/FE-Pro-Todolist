@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
-
+import { FETCH_DATA } from '@/common/errorCodes'
 export function useFetching(api){
     const  [data, setData] = useState([])
     const  [error, setError] = useState(null)
@@ -29,7 +29,7 @@ export function useFetching(api){
           .catch(err=>{
             if(!axios.isCancel(err)) {
               if (isMounted.current) {
-                setError(err);
+                setError(FETCH_DATA);
                 setLoading(false)
               }
             }
