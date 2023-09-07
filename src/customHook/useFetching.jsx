@@ -16,15 +16,12 @@ export function useFetching(api){
     useEffect(()=>{
         const controller = new AbortController();
         isMounted.current=true
-          axios({
-            url: `${api}?pagination[page]=${page.page}&pagination[pageSize]=${page.pageSize}`,
-            signal: controller.signal
-          }).then(res=>{
+          api(page.page, page.pageSize, controller.signal).then(data=>{
             if(isMounted.current){
               setPage({
-                ...res.data.meta.pagination,
+                ...data.meta.pagination,
               })
-              setData(res.data.data)
+              setData(data.data)
               setLoading(false)
               setError(null)
             }

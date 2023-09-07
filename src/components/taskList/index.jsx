@@ -3,9 +3,9 @@ import { useFetching } from '@/customHook/useFetching'
 import { render } from '@/common/renderHelper'
 import { ReloadOutlined } from '@ant-design/icons'
 import {Button} from 'antd'
-
+import {getTasks} from '@/services/task'
 export default function TaskList(props){
-    const {data, loading, error, page, loadPage, reload} = useFetching('/tasks')
+    const {data, loading, error, page, loadPage, reload} = useFetching(getTasks)
     const element = <div className="list">
     <h3 className="list-title">{props.title}</h3>
     <Pagination 
