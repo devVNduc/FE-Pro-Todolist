@@ -4,6 +4,8 @@ import {
 import Home from '@/pages/Home'
 import BaseLayout from "@/components/layout/BaseLayout"
 import ErrorPage from "@/pages/Error";
+import Register from "@/pages/Register";
+import Login from '@/pages/Login'
 export const router = createBrowserRouter([
     {
       path: "/",
@@ -17,7 +19,14 @@ export const router = createBrowserRouter([
         {
             path: '/profile',
             element: <h1>Profile User</h1>
-        }
+        },{
+          path: '/register',
+          element: <Register/>
+        },
+        {
+          path: '/login',
+          element: <Login/>
+        },
       ]
     },
 ]);
