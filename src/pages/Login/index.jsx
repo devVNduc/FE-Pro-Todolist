@@ -12,8 +12,7 @@ const Login = () => {
   const onFinish = async (values) => {
     try {
         let {jwt, user} = await login(values)
-        localStorage.setItem('token', jwt)
-        localStorage.setItem('user', JSON.stringify(user))
+       
         dispatch(setUserAccess({
           token: jwt,
           user: user
