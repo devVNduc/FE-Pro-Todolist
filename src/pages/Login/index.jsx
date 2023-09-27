@@ -3,15 +3,22 @@ import { emailRule, passwordRule } from '@/common/rules';
 import { login } from '@/services/auth'
 import { useNavigate } from 'react-router-dom';
 import useNotification from '@/customHook/useNotify'
+import { useDispatch } from 'react-redux';
+import { setUserAccess } from '@/redux/auth';
 const Login = () => {
+  const dispatch = useDispatch()
   const {contextHolder, infoNotify, errorNotify} = useNotification()
   const nav = useNavigate()
   const onFinish = async (values) => {
     try {
         let {jwt, user} = await login(values)
-
         localStorage.setItem('token', jwt)
         localStorage.setItem('user', JSON.stringify(user))
+        dispatch(setUserAccess({
+          token: jwt,
+          user: user
+        }))
+        
         nav('/')
     } catch ({response}) {
       var {error} = response.data
