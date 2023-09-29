@@ -1,28 +1,26 @@
 import { Button, Form, Input } from 'antd';
 import { emailRule, passwordRule } from '@/common/rules';
-import { login } from '@/services/auth'
 import { useNavigate } from 'react-router-dom';
 import useNotification from '@/customHook/useNotify'
-import { useDispatch } from 'react-redux';
-import { setUserAccess } from '@/redux/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginThunk } from '@/redux/auth/thunk';
 const Login = () => {
   const dispatch = useDispatch()
-  const {contextHolder, infoNotify, errorNotify} = useNotification()
+  const loading = useSelector(state=>state.auth.loading)
+  const {contextHolder, errorNotify} = useNotification()
   const nav = useNavigate()
   const onFinish = async (values) => {
-    try {
-        let {jwt, user} = await login(values)
-       
-        dispatch(setUserAccess({
-          token: jwt,
-          user: user
-        }))
-        
+    dispatch(loginThunk(values))
+    .then(data=>{
+      if(data.error){
+        throw data.error
+      }else{
         nav('/')
-    } catch ({response}) {
-      var {error} = response.data
+      }
+    })
+    .catch(error=>{
       errorNotify('topRight', 'Loi dang nhap', error.message)
-    }
+    })
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -72,7 +70,7 @@ const Login = () => {
         span: 16,
       }}
     >
-      <Button type="primary" htmlType="submit">
+      <Button disabled={loading} type="primary" htmlType="submit">
         Submit
       </Button>
     </Form.Item>
