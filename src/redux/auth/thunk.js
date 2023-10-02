@@ -1,9 +1,11 @@
-import { login } from '@/services/auth'
+import { login, getMe } from '@/services/auth'
 import {createAsyncThunk} from '@reduxjs/toolkit'
 export const loginThunk = createAsyncThunk(
     'auth/loginThunk',
     async (infoUser, thunkAPI) => {
       const data = await login(infoUser)
+      const profile = await getMe(data.jwt)
+      data.user = {...data.user, ...profile}
       return data
     }
 )
