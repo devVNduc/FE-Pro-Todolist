@@ -3,8 +3,10 @@ import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import authReducer from '@/redux/auth'
 import { combineReducers } from '@reduxjs/toolkit';
+import modalReducer from './modal';
 const rootReducer = combineReducers({
-  auth: authReducer
+  auth: authReducer,
+  modal: modalReducer
 });
 
 const persistConfig = {
