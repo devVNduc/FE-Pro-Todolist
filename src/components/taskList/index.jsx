@@ -53,7 +53,7 @@ export default function TaskList(props){
     const element = (
       <>
         <TaskDetailModal 
-          ok={()=>{
+          onOk={()=>{
             reload()
           }}
         />

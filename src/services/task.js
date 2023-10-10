@@ -15,10 +15,11 @@ export const createTask = async (title) => {
     return response.data;
 }
 
-export const updateTask = async (title) => {
-    const response = await axios.post(`/tasks`, {
+export const updateTask = async (id, newTask) => {
+    const response = await axios.put(`/tasks/${id}`, {
         "data": {
-            "title": title
+            "title": newTask.title,
+            "date": newTask.date
         }
     });
     return response.data;

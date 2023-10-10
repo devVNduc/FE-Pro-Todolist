@@ -4,6 +4,8 @@ import { closeModal } from "@/redux/modal"
 import dayjs from "dayjs"
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useEffect } from "react"
+import { updateTask } from "@/services/task";
+import useNotification from '@/customHook/useNotify'
 dayjs.extend(customParseFormat);
 
 
@@ -12,14 +14,12 @@ export default function TaskDetailModal(props){
     const data = useSelector(state => state.modal.dataDetailTaskModal)
     const dispatch = useDispatch()
     const [form] = Form.useForm()
+    const {contextHolder, infoNotify, errorNotify } = useNotification()
     function handleOk(){
-        //todo save
-        if(typeof props.ok == 'function') {props.ok()}
-        dispatch(closeModal())
         form.submit()
     }
     function handleCancel(){
-        if(typeof props.cancel == 'function') {props.cancel()}
+        if(typeof props.onCancel == 'function') {props.onCancel()}
         dispatch(closeModal())
     }
   
@@ -33,37 +33,48 @@ export default function TaskDetailModal(props){
         label: 'Doing',
         },
     ]
-    function onFinish(values){
-        
+    async function handleUpdate(values){
+        try {
+            let id = data?.id
+            await updateTask(id, values)
+            if(typeof props.onOk == 'function') {props.onOk()}
+            infoNotify('topRight', 'Cập nhật thành công', `Cập nhật task id: ${id}`)
+            dispatch(closeModal())
+        } catch (error) {
+            errorNotify('topRight', 'Cập nhật thất bại', `Cập nhật task id: ${id}`)
+        }
     }
     useEffect(() => {
-        form.setFieldsValue(data?.attributes);
+        let date = data?.attributes?.date ? dayjs(data?.attributes?.date) : undefined
+        form.setFieldsValue({
+            title: data?.attributes?.title,
+            complete: data?.attributes?.complete,
+            date: date
+        });
     }, [data?.attributes, form]);
     return (
-        <Modal forceRender title={data?.id || "Detail Task"} open={showDetailTaskModal} onOk={handleOk} onCancel={handleCancel}>
-            <Form
-                form={form}
-                initialValues={{
-                    title: data?.attributes?.title,
-                    complete: data?.attributes?.complete,
-                    date: data?.attributes?.date
-                }}
-                onFinish={onFinish}
-            >
-                <Form.Item name="title">
-                    <Input value={data?.attributes?.title}></Input>
-                </Form.Item>
-                <Form.Item name="complete">
-                    <Select
-                        options={arrStatus}
-                    />
-                </Form.Item>
-                <Form.Item name="date">
-                    <DatePicker 
-                        format="YYYY/MM/DD"
-                    />
-                </Form.Item>
-            </Form>
-        </Modal>
+        <>
+            {contextHolder}
+            <Modal forceRender title={data?.id || "Detail Task"} open={showDetailTaskModal} onOk={handleOk} onCancel={handleCancel}>
+                <Form
+                    form={form}
+                    onFinish={handleUpdate}
+                >   
+                    <Form.Item name="title">
+                        <Input></Input>
+                    </Form.Item>
+                    <Form.Item name="complete">
+                        <Select
+                            options={arrStatus}
+                        />
+                    </Form.Item>
+                    <Form.Item name="date">
+                        <DatePicker 
+                            format="YYYY/MM/DD"
+                        />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </>
     )
 }
