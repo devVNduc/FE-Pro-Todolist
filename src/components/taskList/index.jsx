@@ -1,20 +1,22 @@
 import { Skeleton, Pagination, Input, Space, Form } from 'antd'
 import { useFetching } from '@/customHook/useFetching'
 import { render } from '@/common/renderHelper'
-import { ReloadOutlined, CloseOutlined } from '@ant-design/icons'
+import { ReloadOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons'
 import {Button} from 'antd'
-import {getTasks, createTask} from '@/services/task'
+import {getTasks, createTask, deleteTask} from '@/services/task'
 import { useState, useRef } from 'react'
 import TaskDetailModal from '../Modals/TaskDetail'
 import { openModal } from '@/redux/modal'
 import { useDispatch } from 'react-redux'
+import useNotification from '@/customHook/useNotify'
 export default function TaskList(props){
-    
     const pendingCallAPI = useRef(null)
     const [form] = Form.useForm();
     const [isAddNew, setIsAddNew] = useState(false) 
     const {data, loading, error, page, loadPage, reload} = useFetching(getTasks)
     const dispatch = useDispatch()
+    const {contextHolder, infoNotify, errorNotify } = useNotification()
+
     function toggleAddNew(){
       setIsAddNew(!isAddNew)
     }
@@ -52,8 +54,12 @@ export default function TaskList(props){
 
     const element = (
       <>
+        {contextHolder}
         <TaskDetailModal 
           onOk={()=>{
+            reload()
+          }}
+          onDelete={()=>{
             reload()
           }}
         />
@@ -76,7 +82,20 @@ export default function TaskList(props){
               }).map(item=>{
                 return <li key={item?.id} onClick={()=>{
                   handleOpenModal(item)
-                }}>{item?.attributes?.title}</li>
+                }}>
+                  <Space align='center'>
+                    <DeleteOutlined onClick={async (e)=>{
+                      try {
+                        e.stopPropagation()
+                        await deleteTask(item?.id)
+                        reload()
+                      } catch (error) {
+                        errorNotify('topRight', 'Không thành công', `Xoá taskID ${item?.id}`)
+                      }
+                    }}/>
+                    {item?.attributes?.title}
+                  </Space>
+                </li>
               })
             }
           </ul>

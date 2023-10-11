@@ -1,10 +1,10 @@
 import { useDispatch, useSelector } from "react-redux"
-import { Modal, Form, DatePicker, Input, Select } from "antd"
+import { Modal, Form, DatePicker, Input, Select, Button } from "antd"
 import { closeModal } from "@/redux/modal"
 import dayjs from "dayjs"
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useEffect } from "react"
-import { updateTask } from "@/services/task";
+import { updateTask, deleteTask } from "@/services/task";
 import useNotification from '@/customHook/useNotify'
 dayjs.extend(customParseFormat);
 
@@ -22,7 +22,15 @@ export default function TaskDetailModal(props){
         if(typeof props.onCancel == 'function') {props.onCancel()}
         dispatch(closeModal())
     }
-  
+    async function handleDeleteTask(){
+        try {
+            await deleteTask(data?.id)
+            dispatch(closeModal())
+            if(typeof props.onDelete == 'function') {props.onDelete()}
+          } catch (error) {
+            errorNotify('topRight', 'Không thành công', `Xoá taskID ${data?.id}`)
+        }
+    }
     let arrStatus = [
         {
         value: true,
@@ -55,7 +63,18 @@ export default function TaskDetailModal(props){
     return (
         <>
             {contextHolder}
-            <Modal forceRender title={data?.id || "Detail Task"} open={showDetailTaskModal} onOk={handleOk} onCancel={handleCancel}>
+            <Modal 
+                forceRender 
+                title={data?.id || "Detail Task"} 
+                open={showDetailTaskModal} 
+                onOk={handleOk} 
+                onCancel={handleCancel}
+                footer={[
+                        <Button key="delete" type="dashed" danger onClick={handleDeleteTask}>Xoa</Button>,
+                        <Button key="cancel" onClick={handleCancel}>Cancel</Button>,
+                        <Button key="ok" type="primary" onClick={handleOk}>OK</Button>
+                ]}
+            >
                 <Form
                     form={form}
                     onFinish={handleUpdate}
