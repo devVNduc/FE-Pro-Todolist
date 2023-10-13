@@ -2,13 +2,13 @@ import { useState, useRef } from 'react'
 import { Skeleton, Pagination, Input, Space, Form, Upload, Button, Avatar, Row } from 'antd'
 import { useFetching } from '@/customHook/useFetching'
 import { render } from '@/common/renderHelper'
-import { ReloadOutlined, CloseOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons'
+import { ReloadOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons'
 import {getTasks, createTask, deleteTask, addImgTask} from '@/services/task'
 import TaskDetailModal from '../Modals/TaskDetail'
 import { openModal } from '@/redux/modal'
 import { useDispatch } from 'react-redux'
 import useNotification from '@/customHook/useNotify'
-import { beforeUpload, getBase64 } from '@/common/imageHelper'
+import UploadImage from '../UploadImage'
 export default function TaskList(props){
     const pendingCallAPI = useRef(null)
     const [form] = Form.useForm();
@@ -42,57 +42,13 @@ export default function TaskList(props){
     function handleOpenModal(task){
       dispatch(openModal(task))
     }
-    const handleChange = (info) => {
-      var errorMess = beforeUpload(info.file)
-      if(errorMess){
-        errorNotify('topRight', 'File ảnh không hợp lệ', errorMess)
-        return;
-      }
-      getBase64(info.file, (url) => {
-        setUploadImgTask({
-          base64: url,
-          fileOriginObj: info.fileList[0].originFileObj
-        })
-      });
-    };
-    const uploadButton = (
-      <div>
-         <PlusOutlined />
-        <div
-          style={{
-            marginTop: 8,
-          }}
-        >
-          Upload
-        </div>
-      </div>
-    );
-
-    const uploadComponent = (
-      <Upload
-        name="files"
-        showUploadList={false}
-        onChange={handleChange}
-        beforeUpload={() => false}
-        listType="picture-card"
-        className="avatar-uploader"
-      >
-        {uploadImgTask.base64 ? <img
-            src={uploadImgTask.base64}
-            alt="task img"
-            style={{
-              width: '100%',
-          }}
-        /> : uploadButton}
-      </Upload>
-    )
-    
+    console.log('====', uploadImgTask);
     const inputNewArea = (
       <Form 
         onFinish={handleAddNew}
         form={form}
       >
-        {uploadComponent}
+        <UploadImage setImg={setUploadImgTask}></UploadImage>
         <Space>
           <Form.Item name='title' style={{marginBottom: 0}}>
             <Input placeholder='Enter Task Title'></Input>
