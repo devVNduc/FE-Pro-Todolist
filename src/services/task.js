@@ -1,7 +1,7 @@
 import axios from "axios";
-import dayjs from 'dayjs';
+import { upload } from '@/services/upload'
 export const getTasks = async (page, pageSize , signal) => {
-    const response = await axios.get(`/tasks?pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[0]=createdAt:desc`, {signal});
+    const response = await axios.get(`/tasks?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}&sort[0]=createdAt:desc`, {signal});
     return response.data;
 }
 
@@ -29,3 +29,9 @@ export const deleteTask = async (id) => {
     const response = await axios.delete(`/tasks/${id}`);
     return response.data;
 }
+
+export const addImgTask = async (file, idTask) => {
+    const response = await upload(file, 'api::task.task', idTask, 'image')
+    return response.data;
+}
+
