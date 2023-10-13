@@ -1,16 +1,19 @@
 import { Upload } from "antd";
 import { PlusOutlined } from '@ant-design/icons'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { beforeUpload, getBase64 } from '@/common/imageHelper'
 import useNotification from '@/customHook/useNotify'
 
 export default function UploadImage(props){
     const {contextHolder, infoNotify, errorNotify } = useNotification()
+    
     const [imgObj, setImgObj] = useState({
-        base64: '',
+        base64: props.initSrc || '',
         fileOriginObj: null,
     })
-
+    useEffect(()=>{
+        setImgObj({...imgObj, base64: props.initSrc})
+    }, [props.initSrc])
     const handleChange = (info) => {
         var errorMess = beforeUpload(info.file)
         if(errorMess){
@@ -27,6 +30,7 @@ export default function UploadImage(props){
             props.setImg(data)
         });
     };
+    
     const uploadButton = (
         <div>
            <PlusOutlined />

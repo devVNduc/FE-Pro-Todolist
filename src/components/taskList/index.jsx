@@ -42,7 +42,6 @@ export default function TaskList(props){
     function handleOpenModal(task){
       dispatch(openModal(task))
     }
-    console.log('====', uploadImgTask);
     const inputNewArea = (
       <Form 
         onFinish={handleAddNew}

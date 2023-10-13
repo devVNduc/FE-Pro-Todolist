@@ -3,9 +3,10 @@ import { Modal, Form, DatePicker, Input, Select, Button } from "antd"
 import { closeModal } from "@/redux/modal"
 import dayjs from "dayjs"
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { useEffect } from "react"
-import { updateTask, deleteTask } from "@/services/task";
+import { useEffect, useState } from "react"
+import { updateTask, deleteTask, addImgTask } from "@/services/task";
 import useNotification from '@/customHook/useNotify'
+import UploadImage from "../UploadImage";
 dayjs.extend(customParseFormat);
 
 
@@ -15,6 +16,10 @@ export default function TaskDetailModal(props){
     const dispatch = useDispatch()
     const [form] = Form.useForm()
     const {contextHolder, infoNotify, errorNotify } = useNotification()
+    const [uploadImgTask, setUploadImgTask] = useState({
+        base64: '',
+        fileOriginObj: null,
+    })
     function handleOk(){
         form.submit()
     }
@@ -45,6 +50,7 @@ export default function TaskDetailModal(props){
         try {
             let id = data?.id
             await updateTask(id, values)
+            await addImgTask(uploadImgTask.fileOriginObj, id)
             if(typeof props.onOk == 'function') {props.onOk()}
             infoNotify('topRight', 'Cập nhật thành công', `Cập nhật task id: ${id}`)
             dispatch(closeModal())
@@ -79,6 +85,7 @@ export default function TaskDetailModal(props){
                     form={form}
                     onFinish={handleUpdate}
                 >   
+                    <UploadImage setImg={setUploadImgTask} initSrc={`https://backoffice.nodemy.vn${data?.attributes?.image?.data?.attributes?.url}`}></UploadImage>
                     <Form.Item name="title">
                         <Input></Input>
                     </Form.Item>
