@@ -18,7 +18,7 @@ export default function TaskList(props){
     const {contextHolder, infoNotify, errorNotify } = useNotification()
     const [uploadImgTask, setUploadImgTask] = useState({
       base64: '',
-      fileOriginObj: null
+      fileOriginObj: null,
     })
     function toggleAddNew(){
       setIsAddNew(!isAddNew)
@@ -43,8 +43,11 @@ export default function TaskList(props){
       dispatch(openModal(task))
     }
     const handleChange = (info) => {
-      console.log('...',info);
-     
+      var errorMess = beforeUpload(info.file)
+      if(errorMess){
+        errorNotify('topRight', 'File ảnh không hợp lệ', errorMess)
+        return;
+      }
       getBase64(info.file, (url) => {
         setUploadImgTask({
           base64: url,
@@ -70,7 +73,7 @@ export default function TaskList(props){
         name="files"
         showUploadList={false}
         onChange={handleChange}
-        beforeUpload={beforeUpload}
+        beforeUpload={() => false}
         listType="picture-card"
         className="avatar-uploader"
       >
