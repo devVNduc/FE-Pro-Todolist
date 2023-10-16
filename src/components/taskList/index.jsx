@@ -30,7 +30,9 @@ export default function TaskList(props){
         pendingCallAPI.current.disabled = true
         let newTask = await createTask(title)
         newTask = newTask.data
-        await addImgTask(uploadImgTask.fileOriginObj, newTask.id)
+        if(uploadImgTask.fileOriginObj){
+          await addImgTask(uploadImgTask.fileOriginObj, newTask.id)
+        }
         pendingCallAPI.current.disabled = false
         reload()
         setIsAddNew(false)

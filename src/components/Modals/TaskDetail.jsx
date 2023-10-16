@@ -47,10 +47,10 @@ export default function TaskDetailModal(props){
         },
     ]
     async function handleUpdate(values){
+        let id = data?.id
         try {
-            let id = data?.id
             await updateTask(id, values)
-            await addImgTask(uploadImgTask.fileOriginObj, id)
+            if(uploadImgTask.fileOriginObj){await addImgTask(uploadImgTask.fileOriginObj, id)}
             if(typeof props.onOk == 'function') {props.onOk()}
             infoNotify('topRight', 'Cập nhật thành công', `Cập nhật task id: ${id}`)
             dispatch(closeModal())
