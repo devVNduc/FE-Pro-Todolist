@@ -3,9 +3,9 @@ import { Skeleton, Pagination, Input, Space, Form, Upload, Button, Avatar, Row }
 import { useFetching } from '@/customHook/useFetching'
 import { render } from '@/common/renderHelper'
 import { ReloadOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons'
-import {getTasks, createTask, deleteTask, addImgTask} from '@/services/task'
+import {getTasksUnComplete, getTasksComplete, createTask, deleteTask, addImgTask} from '@/services/task'
 import TaskDetailModal from '../Modals/TaskDetail'
-import { openModal } from '@/redux/modal'
+import { openModal, reloadTaskList} from '@/redux/modal'
 import { useDispatch } from 'react-redux'
 import useNotification from '@/customHook/useNotify'
 import UploadImage from '../UploadImage'
@@ -13,6 +13,7 @@ export default function TaskList(props){
     const pendingCallAPI = useRef(null)
     const [form] = Form.useForm();
     const [isAddNew, setIsAddNew] = useState(false) 
+    const getTasks = props.topic === 'done' ? getTasksComplete : getTasksUnComplete
     const {data, loading, error, page, loadPage, reload} = useFetching(getTasks)
     const dispatch = useDispatch()
     const {contextHolder, infoNotify, errorNotify } = useNotification()
@@ -65,10 +66,10 @@ export default function TaskList(props){
         {contextHolder}
         <TaskDetailModal 
           onOk={()=>{
-            reload()
+            dispatch(reloadTaskList())
           }}
           onDelete={()=>{
-            reload()
+            dispatch(reloadTaskList())
           }}
         />
         <div className="list">

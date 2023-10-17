@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import { FETCH_DATA } from '@/common/errorCodes'
+import { useSelector } from 'react-redux'
 export function useFetching(api){
     const  [data, setData] = useState([])
     const  [error, setError] = useState(null)
     const  [loading, setLoading] = useState(true)
     const [loadCount, setLoadCount] = useState(0)
+    const countReloadTaskList = useSelector(state=>state.modal.countReloadTaskList)
     const [page, setPage] = useState({
       page: 1,
       pageCount: 5,
@@ -40,7 +42,7 @@ export function useFetching(api){
           isMounted.current= false
           controller.abort();
         }
-    }, [api, page.page, page.pageSize, loadCount])
+    }, [api, page.page, page.pageSize, loadCount, countReloadTaskList])
     function loadPage(page, pageSize){
       setLoading(true)
       setPage(prev=>{
