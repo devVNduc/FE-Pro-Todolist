@@ -40,3 +40,7 @@ export const addImgTask = async (file, idTask) => {
     return response.data;
 }
 
+export const searchTask = async (txt) => {
+    const response = await axios.get(`/tasks?populate=*&pagination[page]=1&pagination[pageSize]=5&filters[title][$contains]=${txt}`);
+    return response.data;
+}
