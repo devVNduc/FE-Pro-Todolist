@@ -9,6 +9,7 @@ import { openModal, reloadTaskList} from '@/redux/modal'
 import { useDispatch } from 'react-redux'
 import useNotification from '@/customHook/useNotify'
 import UploadImage from '../UploadImage'
+const {VITE_ORIGIN} = import.meta.env
 export default function TaskList(props){
     const pendingCallAPI = useRef(null)
     const [form] = Form.useForm();
@@ -94,7 +95,7 @@ export default function TaskList(props){
                     handleOpenModal(item)
                   }}>
                     <Row justify="space-between" align="middle">
-                      <Avatar src={`https://backoffice.nodemy.vn${item?.attributes?.image?.data?.attributes?.url}`}>
+                      <Avatar src={VITE_ORIGIN + item?.attributes?.image?.data?.attributes?.url}>
                         {item?.attributes?.title.substring(0, 1).toUpperCase()}
                       </Avatar>
                       {item?.attributes?.title}
