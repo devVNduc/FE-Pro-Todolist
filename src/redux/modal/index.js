@@ -2,8 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     showDetailTaskModal: false,
-    dataDetailTaskModal: {},
-    countReloadTaskList: 0
+    dataDetailTaskModal: {}
 }
 
 export const modalSlice = createSlice({
@@ -16,12 +15,9 @@ export const modalSlice = createSlice({
     },
     closeModal: (state)=>{
         state.showDetailTaskModal = false
-    },
-    reloadTaskList: (state)=>{
-      state.countReloadTaskList++
     }
   },
 })
 
-export const { openModal, closeModal, reloadTaskList } = modalSlice.actions
+export const { openModal, closeModal } = modalSlice.actions
 export default modalSlice.reducer

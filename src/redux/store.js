@@ -4,9 +4,11 @@ import storage from 'redux-persist/lib/storage'
 import authReducer from '@/redux/auth'
 import { combineReducers } from '@reduxjs/toolkit';
 import modalReducer from './modal';
+import taskListReducer from './taskList';
 const rootReducer = combineReducers({
   auth: authReducer,
-  modal: modalReducer
+  modal: modalReducer,
+  taskList: taskListReducer
 });
 
 const persistConfig = {

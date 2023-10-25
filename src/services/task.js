@@ -1,12 +1,22 @@
 import axios from "axios";
 import { upload } from '@/services/upload'
-export const getTasksComplete = async (page, pageSize , signal) => {
-    const response = await axios.get(`/tasks?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}&filters[complete]=true&sort[0]=createdAt:desc`, {signal});
+import {store} from '@/redux/store'
+
+export const getTaskByStatus = async (status = true, page, pageSize, signal) => {
+    const {startDate, endDate} = store.getState().taskList.filters
+    let queryFilterDate = ''
+    if(startDate && endDate){
+        queryFilterDate = `&filters[date][$between]=${startDate}&filters[date][$between]=${endDate}`
+    }
+    const response = await axios.get(`/tasks?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}&filters[complete]=${status}${queryFilterDate}&sort[0]=createdAt:desc`, {signal});
     return response.data;
 }
+
+export const getTasksComplete = async (page, pageSize , signal) => {
+    return getTaskByStatus(true, page, pageSize , signal)
+}
 export const getTasksUnComplete = async (page, pageSize , signal) => {
-    const response = await axios.get(`/tasks?populate=*&pagination[page]=${page}&pagination[pageSize]=${pageSize}&filters[complete]=false&sort[0]=createdAt:desc`, {signal});
-    return response.data;
+    return getTaskByStatus(false, page, pageSize , signal)
 }
 
 export const createTask = async (title) => {
