@@ -1,11 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
-
+import thunk from './thunk'
 const initialState = {
     countReloadTaskList: 0,
     filters: {
         startDate: null,
         endDate: null
-    }
+    },
+    warningTasks: []
 }
 
 export const taskListSlice = createSlice({
@@ -20,6 +21,7 @@ export const taskListSlice = createSlice({
         state.filters.endDate = action?.payload?.endDate
     }
   },
+  extraReducers: thunk
 })
 
 export const { reloadTaskList, updateFilterDate } = taskListSlice.actions

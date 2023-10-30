@@ -1,8 +1,17 @@
+import { useEffect, useState } from 'react'
 import { Tooltip } from 'antd';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import SearchTask from './SearchTask'
+import {warningTasksThunk} from '@/redux/taskList/thunk'
+import ResultTasksList from './ResultTasksList'
 export default function Header(){
     const user = useSelector(state => state.auth.user)
+    const warningTasks = useSelector(state => state.taskList.warningTasks)
+    const dispatch = useDispatch()
+    const [showWarningPopup, setShowWarningPopup] = useState(false)
+    useEffect(()=>{
+        dispatch(warningTasksThunk())
+    }, [])
     return (
         <header className="masthead">
             <div className="boards-menu">
@@ -19,9 +28,25 @@ export default function Header(){
             <button className="user-settings-btn btn" aria-label="Information">
                 <i className="fas fa-info-circle" aria-hidden="true"></i>
             </button>
-            <button className="user-settings-btn btn" aria-label="Notifications">
+            <button className="user-settings-btn btn" aria-label="Notifications"
+                onClick={()=>{
+                    setShowWarningPopup(!showWarningPopup)
+                }}
+            >
                 <i className="fas fa-bell" aria-hidden="true"></i>
+                <span>{warningTasks?.length}</span>
             </button>
+            {
+                    showWarningPopup ? <ResultTasksList 
+                    style={{
+                        right: '50px'
+                    }}
+                    listTask = {warningTasks}
+                    handleItemClick={(e)=>{
+                       setShowWarningPopup(false)
+                    }}
+                    /> : null
+                }
             <Tooltip title={user?.username}>
                 <button className="user-settings-btn btn" aria-label="User Settings">
                     <i className="fas fa-user-circle" aria-hidden="true"></i>

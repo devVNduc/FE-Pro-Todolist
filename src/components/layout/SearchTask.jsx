@@ -1,13 +1,10 @@
 import _ from 'lodash'
-import { Form, Input, Avatar, List } from 'antd'
+import { Form, Input } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
 import { searchTask } from '@/services/task'
-import { useDispatch } from 'react-redux'
-import { openModal } from '@/redux/modal'
-const {VITE_ORIGIN} = import.meta.env
+import ResultTasksList from './ResultTasksList'
 export default function SearchTask(){
     const [listTask, setListTask] = useState([])
-    const dispatch = useDispatch()
     useEffect(()=>{
         function closeSearchPopup(e){
             setListTask([])
@@ -32,37 +29,16 @@ export default function SearchTask(){
             console.log(error);
         }
     }, 1000))
-    const handleClick = (item)=>{
-        dispatch(openModal(item))
-    }
+   
     let result = (
-        listTask.length > 0 ? <List
-                itemLayout="horizontal"
-                dataSource={listTask}
-                style={{
-                    position: 'fixed',
-                    top: '50px',
-                    width: '300px',
-                    zIndex: 2,
-                    background: 'white'
-                }}
-                
-                renderItem={(item, index) => (
-                <List.Item
-                    onClick={(e)=>{
-                        e.stopPropagation()
-                        setListTask([])
-                        handleClick(item)
-                    }}
-                >
-                    <List.Item.Meta
-                    avatar={<Avatar src={VITE_ORIGIN + item?.attributes?.image?.data?.attributes?.url} />}
-                    title={item?.id}
-                    description={item?.attributes?.title}
-                    />
-                </List.Item>
-                )}
-            /> : null
+        listTask.length > 0 ? <ResultTasksList 
+            listTask = {listTask}
+            handleItemClick={(e)=>{
+                e.stopPropagation()
+                setListTask([])
+            }}
+
+        /> : null
     )
 
     return (

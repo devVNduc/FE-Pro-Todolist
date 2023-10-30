@@ -10,6 +10,7 @@ import { reloadTaskList } from '@/redux/taskList'
 import { useDispatch } from 'react-redux'
 import useNotification from '@/customHook/useNotify'
 import UploadImage from '../UploadImage'
+import { warningTasksThunk } from '@/redux/taskList/thunk'
 const {VITE_ORIGIN} = import.meta.env
 export default function TaskList(props){
     const pendingCallAPI = useRef(null)
@@ -38,6 +39,7 @@ export default function TaskList(props){
         }
         pendingCallAPI.current.disabled = false
         reload()
+        dispatch(warningTasksThunk())
         setIsAddNew(false)
       } catch (error) {
         console.log('loi', error);
@@ -69,9 +71,11 @@ export default function TaskList(props){
         <TaskDetailModal 
           onOk={()=>{
             dispatch(reloadTaskList())
+            dispatch(warningTasksThunk())
           }}
           onDelete={()=>{
             dispatch(reloadTaskList())
+            dispatch(warningTasksThunk())
           }}
         />
         <div className="list">
@@ -105,6 +109,7 @@ export default function TaskList(props){
                           e.stopPropagation()
                           await deleteTask(item?.id)
                           reload()
+                          dispatch(warningTasksThunk())
                         } catch (error) {
                           errorNotify('topRight', 'Không thành công', `Xoá taskID ${item?.id}`)
                         }

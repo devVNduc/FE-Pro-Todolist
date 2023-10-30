@@ -1,6 +1,7 @@
 import axios from "axios";
 import { upload } from '@/services/upload'
 import {store} from '@/redux/store'
+import dayjs from "dayjs";
 
 export const getTaskByStatus = async (status = true, page, pageSize, signal) => {
     const {startDate, endDate} = store.getState().taskList.filters
@@ -52,5 +53,14 @@ export const addImgTask = async (file, idTask) => {
 
 export const searchTask = async (txt) => {
     const response = await axios.get(`/tasks?populate=*&pagination[page]=1&pagination[pageSize]=5&filters[title][$contains]=${txt}`);
+    return response.data;
+}
+
+export const getWarningTasks = async () => {
+    let today = new Date()
+    today.setDate(today.getDate() + 3)
+    let warningDate = dayjs(today).format('YYYY-MM-DD')
+
+    const response = await axios.get(`/tasks?populate=*&pagination[page]=1&pagination[pageSize]=5&filters[date][$lte]=${warningDate}&sort[0]=date:desc`);
     return response.data;
 }
