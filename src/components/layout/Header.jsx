@@ -1,17 +1,25 @@
 import { useEffect, useState } from 'react'
 import { Tooltip } from 'antd';
+import {LogoutOutlined} from '@ant-design/icons'
 import { useSelector, useDispatch } from 'react-redux';
 import SearchTask from './SearchTask'
 import {warningTasksThunk} from '@/redux/taskList/thunk'
+import {logout} from '@/redux/auth/index'
 import ResultTasksList from './ResultTasksList'
 export default function Header(){
     const user = useSelector(state => state.auth.user)
     const warningTasks = useSelector(state => state.taskList.warningTasks)
     const dispatch = useDispatch()
     const [showWarningPopup, setShowWarningPopup] = useState(false)
+    
     useEffect(()=>{
         dispatch(warningTasksThunk())
     }, [])
+
+    function handleLogout(){
+       dispatch(logout()) 
+    }
+    
     return (
         <header className="masthead">
             <div className="boards-menu">
@@ -25,9 +33,7 @@ export default function Header(){
             <button className="user-settings-btn btn" aria-label="Create">
                 <i className="fas fa-plus" aria-hidden="true"></i>
             </button>
-            <button className="user-settings-btn btn" aria-label="Information">
-                <i className="fas fa-info-circle" aria-hidden="true"></i>
-            </button>
+           
             <button className="user-settings-btn btn" aria-label="Notifications"
                 onClick={()=>{
                     setShowWarningPopup(!showWarningPopup)
@@ -52,6 +58,11 @@ export default function Header(){
                     <i className="fas fa-user-circle" aria-hidden="true"></i>
                 </button>
             </Tooltip>
+            <button className="user-settings-btn btn" aria-label="Information"
+                onClick={handleLogout}
+            >
+                <LogoutOutlined />
+            </button>
             </div>
         </header>
     )
